@@ -12,3 +12,10 @@ requires-python = ">=3.9"
 dependencies = [
     "music_tag",
 ]
+
+[tool.setuptools]
+packages = [
+    "fix_music_tags",
+    "metadata", 
+    "tag_utils"
+]
