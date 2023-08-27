@@ -11,6 +11,8 @@ regex_list = [
     re.compile(r"\s*[({\[]\s*\d*\s*re[-]*master[ed]*\s*\d*\s*[)}\]]", re.IGNORECASE),  # remastered
     re.compile(r"\s*[({\[]\s*album\s+version\s*[)}\]]", re.IGNORECASE),  # "album version"
     re.compile(r"\s*[({\[].*release\s*[)}\]]", re.IGNORECASE),  # "US Release"
+    re.compile(r"\s*[({\[]original.*\s*[)}\]]", re.IGNORECASE),  # "Original"
+    re.compile(r"\s*[({\[].*version\s*[)}\]]", re.IGNORECASE),  # "* Version"
 ]
 
 filename_regex_list = [
@@ -23,7 +25,10 @@ def update_dir(dir_path, dry_run=False):
     root, dir = os.path.split(dir_path)
     for file in os.listdir(dir_path):
         filepath = os.path.join(dir_path, file)
-        update(filepath, dry_run)
+        if os.path.isdir(filepath):
+            update_dir(dir_path=filepath, dry_run=dry_run)
+        elif any (file.lower().endswith(x) for x in [".flac", ".mp3"]):
+            update(filepath, dry_run)
 
     # Check directory names
     old_dirname = dirname = dir
@@ -74,9 +79,9 @@ def update(filepath, dry_run=False):
             os.rename(filepath, new_filepath)
 
 
-def clean(string):
+def clean(string, regexes=regex_list):
     hits = 0
-    for regex in regex_list:
+    for regex in regexes:
         string, hit = regex.subn("", string)
         hits += hit
 
@@ -90,4 +95,5 @@ def scrub_filename(filename):
 
 
 if __name__ == "__main__":
-    update_dir(r"")
+    update_dir(r"V:\media\audio\Music")
+    input()
