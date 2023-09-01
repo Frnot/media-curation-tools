@@ -33,7 +33,7 @@ def convert_plex_artist_format(track: Track):
     """
     
     artist_list = track.artists
-    track.set_artists(" ,".join(artist_list))
+    track.set_artists(", ".join(artist_list))
     track.append_comment("#artists::" + r"\\".join(artist_list))
 
 
